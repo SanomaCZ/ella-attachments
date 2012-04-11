@@ -1,6 +1,8 @@
+import os
 from datetime import datetime
 
 from django.db import models
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
@@ -33,13 +35,22 @@ class Attachment(models.Model):
     publishables = models.ManyToManyField(Publishable, blank=True, null=True,
                                           verbose_name=_('Publishables'))
 
-    description = models.TextField(_('Description'))
+    description = models.TextField(_('Description'), blank=True, null=True, default=None)
 
     created = models.DateTimeField(_('Created'), default=datetime.now, editable=False)
 
     attachment = models.FileField(_('Attachment'), upload_to=UPLOAD_TO)
 
-    type = models.ForeignKey(Type, verbose_name=_('Attachment type'))
+    type = models.ForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
+
+    def get_download_url(self):
+        return reverse('ella_attachments-download', kwargs={'slug': self.slug})
+
+    def get_absolute_url(self):
+        return self.attachment.url
+
+    def filename(self):
+        return os.path.basename(self.attachment.url)
 
     class Meta:
         ordering=('created',)
