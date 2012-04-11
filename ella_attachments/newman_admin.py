@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
 from ella import newman
@@ -6,6 +7,7 @@ from ella.core.models import Publishable
 
 from ella_attachments.models import Attachment, Type
 
+GUESS_MIMETYPE = getattr(settings, 'ATTACHMENTS_GUESS_MIMETYPE', True)
 
 class AttachmentInlineAdmin(newman.NewmanTabularInline):
     model = Attachment.publishables.through
@@ -17,7 +19,10 @@ class AttachmentInlineAdmin(newman.NewmanTabularInline):
 
 
 class AttachmentAdmin(newman.NewmanModelAdmin):
-    list_display = ('name', 'type', 'created',)
+    if GUESS_MIMETYPE:
+        list_display = ('name', 'created',)
+    else:
+        list_display = ('name', 'type', 'created',)
     list_filter = ('type',)
     prepopulated_fields = {'slug' : ('name',)}
     rich_text_fields = {'small': ('description',)}
