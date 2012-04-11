@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from ella import newman
 from ella.core.models import Publishable
@@ -10,6 +11,9 @@ class AttachmentInlineAdmin(newman.NewmanTabularInline):
     model = Attachment.publishables.through
     extra = 3
     suggest_fields = {'attachment': ('name',)}
+
+    verbose_name = _('Attachment')
+    verbose_name_plural = _('Attachments')
 
 
 class AttachmentAdmin(newman.NewmanModelAdmin):
