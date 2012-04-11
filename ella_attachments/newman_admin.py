@@ -8,7 +8,7 @@ from ella_attachments.models import Attachment, Type
 
 class AttachmentInlineAdmin(newman.NewmanTabularInline):
     model = Attachment.publishables.through
-    extra = 0
+    extra = 3
     suggest_fields = {'attachment': ('name',)}
 
 
