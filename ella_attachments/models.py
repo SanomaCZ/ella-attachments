@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+from ella.core.box import Box
 from ella.core.models import Publishable
 from ella.photos.models import Photo
 
@@ -20,14 +21,30 @@ class Type(models.Model):
             help_text=_('consult http://www.sfsu.edu/training/mimetype.htm'))
 
     class Meta:
-        ordering=('name',)
+        ordering = ('name',)
         verbose_name = _('Type')
         verbose_name_plural = _('Types')
 
     def __unicode__(self):
         return self.name
 
+
+class AttachmentBox(Box):
+    def get_context(self):
+        "Updates box context with attachment-specific variables."
+        cont = super(AttachmentBox, self).get_context()
+        cont.update({
+            'name' : self.params.get('name', self.obj.name),
+            'description' : self.params.get('description', self.obj.description),
+            'type_name': self.params.get('type_name', self.obj.type.name),
+            'type_mimetype': self.params.get('type_mimetype', self.obj.type.mimetype),
+        })
+        return cont
+
+
 class Attachment(models.Model):
+    box_class = AttachmentBox
+
     name = models.CharField(_('Name'), max_length=255)
     slug = models.SlugField(_('Slug'), max_length=255, unique=True)
 
@@ -53,7 +70,7 @@ class Attachment(models.Model):
         return os.path.basename(self.attachment.url)
 
     class Meta:
-        ordering=('created',)
+        ordering = ('created',)
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
 
