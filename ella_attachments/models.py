@@ -36,10 +36,16 @@ class AttachmentBox(Box):
         cont.update({
             'name' : self.params.get('name', self.obj.name),
             'description' : self.params.get('description', self.obj.description),
+            'attachment' : self.params.get('attachment', self.obj.attachment),
             'type_name': self.params.get('type_name', self.obj.type.name),
             'type_mimetype': self.params.get('type_mimetype', self.obj.type.mimetype),
         })
         return cont
+    
+    def _get_template_list(self):
+        template_list = super(AttachmentBox, self)._get_template_list()
+        return template_list
+        
 
 
 class Attachment(models.Model):
