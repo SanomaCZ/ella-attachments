@@ -42,10 +42,24 @@ class AttachmentBox(Box):
         })
         return cont
     
-    def _get_template_list(self):
-        template_list = super(AttachmentBox, self)._get_template_list()
-        return template_list
+    def _get_template_list(self):    
+        " Get the hierarchy of templates belonging to the object/box_type given. "
+        t_list = []
+        base_path = 'box/content_type/%s/' % self.opts
         
+        if hasattr(self.obj, 'slug'):
+            t_list.append(base_path + '%s/%s.html' % (self.obj.slug, self.box_type,))
+            
+        if hasattr(self.obj, 'type'):
+            t_list.append(base_path + 'type/%s/%s.html' % (self.obj.type.slug, self.box_type,))
+            
+        t_list.append(base_path + '%s.html' % (self.box_type,))
+        t_list.append(base_path + 'box.html')
+
+        t_list.append('box/%s.html' % self.box_type)
+        t_list.append('box/box.html')
+
+        return t_list
 
 
 class Attachment(models.Model):
