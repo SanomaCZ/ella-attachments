@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+import ella
 from ella.core.box import Box
 from ella.core.models import Publishable
 from ella.photos.models import Photo
@@ -45,7 +46,9 @@ class AttachmentBox(Box):
     def _get_template_list(self):    
         " Get the hierarchy of templates belonging to the object/box_type given. "
         t_list = []
-        base_path = 'box/content_type/%s/' % self.opts
+
+        # Box.opts changed to Box.name in Ella 3
+        base_path = 'box/content_type/%s/' % getattr(self, ella.VERSION < (3,) and 'opts' or 'name')
         
         if hasattr(self.obj, 'slug'):
             t_list.append(base_path + '%s/%s.html' % (self.obj.slug, self.box_type,))

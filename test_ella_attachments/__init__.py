@@ -24,6 +24,8 @@ def setup():
         from django.utils.translation import activate
         activate('cs')
 
+        import ella.core.register
+
     except Exception:
         import traceback, pprint
         pprint.pprint(traceback.print_exc())

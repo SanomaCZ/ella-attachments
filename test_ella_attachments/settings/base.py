@@ -1,8 +1,14 @@
 from os.path import abspath, join, dirname, pardir
 
+SITE_ID = 1
+
 PROJECT_ROOT = abspath(join(dirname(__file__), pardir))
 
 MEDIA_ROOT = join(PROJECT_ROOT, 'media')
+
+TEMPLATE_DIRS = (
+    join(PROJECT_ROOT, 'templates'),
+)
 
 SECRET_KEY = 'test_ella_attachments'
 
