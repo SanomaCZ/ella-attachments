@@ -1,2 +1,4 @@
 *.py[co]
 .*.swp
+nosetests.xml
+.coverage
