@@ -1,4 +1,5 @@
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import Http404
 from django.test import TestCase
 from django.template import Template, Context, NodeList
 
@@ -107,3 +108,5 @@ class TestApp(TestCase):
 
         response = download_attachment(None, 'none-type')
         self.assertEqual(response['Content-Type'], 'text/plain')
+
+        self.assertRaises(Http404, download_attachment, None, 'nonexistent')
