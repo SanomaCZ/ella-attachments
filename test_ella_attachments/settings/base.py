@@ -19,6 +19,8 @@ DATABASES = {
     }
 }
 
+ROOT_URLCONF = 'ella_attachments.urls'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',

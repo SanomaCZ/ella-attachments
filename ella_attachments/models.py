@@ -38,24 +38,24 @@ class AttachmentBox(Box):
             'name' : self.params.get('name', self.obj.name),
             'description' : self.params.get('description', self.obj.description),
             'attachment' : self.params.get('attachment', self.obj.attachment),
-            'type_name': self.params.get('type_name', self.obj.type.name),
-            'type_mimetype': self.params.get('type_mimetype', self.obj.type.mimetype),
+            'type_name': self.params.get('type_name', getattr(self.obj.type, 'name', None)),
+            'type_mimetype': self.params.get('type_mimetype', getattr(self.obj.type, 'mimetype', None)),
         })
         return cont
-    
-    def _get_template_list(self):    
+
+    def _get_template_list(self):
         " Get the hierarchy of templates belonging to the object/box_type given. "
         t_list = []
 
         # Box.opts changed to Box.name in Ella 3
         base_path = 'box/content_type/%s/' % getattr(self, ella.VERSION < (3,) and 'opts' or 'name')
-        
+
         if hasattr(self.obj, 'slug'):
             t_list.append(base_path + '%s/%s.html' % (self.obj.slug, self.box_type,))
-            
-        if hasattr(self.obj, 'type'):
+
+        if hasattr(self.obj, 'type') and hasattr(self.obj.type, 'slug'):
             t_list.append(base_path + 'type/%s/%s.html' % (self.obj.type.slug, self.box_type,))
-            
+
         t_list.append(base_path + '%s.html' % (self.box_type,))
         t_list.append(base_path + 'box.html')
 
