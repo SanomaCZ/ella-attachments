@@ -8,8 +8,8 @@ class AttachmentAdmin(admin.ModelAdmin):
     list_filter = ('type',)
     prepopulated_fields = {'slug' : ('name',)}
     rich_text_fields = {'small': ('description',)}
-    raw_id_fields = ('photo',)
-    filter_horizontal = ('publishables',)
+    # If you want publistable prompter you must register admin for this
+    raw_id_fields = ('photo', 'publishables',)
 
 
 class TypeAdmin(admin.ModelAdmin):
