@@ -10,6 +10,7 @@ import ella
 from ella.core.box import Box
 from ella.core.models import Publishable
 from ella.photos.models import Photo
+from ella.core.cache import CachedForeignKey
 
 
 UPLOAD_TO = getattr(settings, 'ATTACHMENTS_UPLOAD_TO', 'attachments/%Y/%m/%d')
@@ -71,7 +72,7 @@ class Attachment(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     slug = models.SlugField(_('Slug'), max_length=255, unique=True)
 
-    photo = models.ForeignKey(Photo, blank=True, null=True, verbose_name=_('Photo'), related_name='photos')
+    photo = CachedForeignKey(Photo, blank=True, null=True, verbose_name=_('Photo'), related_name='photos')
     publishables = models.ManyToManyField(Publishable, blank=True, null=True,
                                           verbose_name=_('Publishables'))
 
@@ -81,7 +82,7 @@ class Attachment(models.Model):
 
     attachment = models.FileField(_('Attachment'), upload_to=UPLOAD_TO)
 
-    type = models.ForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
+    type = CachedForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
 
     def get_download_url(self):
         return reverse('ella_attachments-download', kwargs={'slug': self.slug})
