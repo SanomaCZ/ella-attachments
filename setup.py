@@ -10,7 +10,7 @@ install_requires = [
 ]
 
 setup(
-    name='ella_attachments',
+    name='ella-attachments',
     version=__versionstr__,
     description='Add attachments to Ella Publishable',
     author='SMP Online Development Team',
