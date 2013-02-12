@@ -2,3 +2,5 @@
 .*.swp
 nosetests.xml
 .coverage
+*.egg-info
+
