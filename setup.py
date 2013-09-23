@@ -10,16 +10,19 @@ install_requires = [
     'South>=0.7',
 ]
 
+test_requires = [
+    'nose',
+    'coverage',
+]
+
 setup(
     name='ella-attachments',
     version=__versionstr__,
-    description='Add attachments to Ella Publishable',
-    author='SMP Online Development Team',
-    author_email='online-dev@sanomamedia.cz',
-    maintainer='Vitek Pliska',
-    maintainer_email='whit@smdev.cz',
+    description='Add attachments to Ella project',
+    author='Ella Development Team',
+    author_email='dev@ella-cms.com',
     license='BSD',
-    url='https://github.com/SanomaCZ/ella-attachments',
+    url='https://github.com/ella/ella-attachments',
 
     packages=find_packages(
         where='.',
@@ -42,4 +45,7 @@ setup(
 
     include_package_data=True,
     install_requires=install_requires,
+
+    test_suite='test_ella_attachments.run_tests.run_all',
+    tests_require=test_requires,
 )

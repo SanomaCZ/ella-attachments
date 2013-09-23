@@ -96,7 +96,7 @@ class TestApp(TestCase):
         self.assertEqual(self.plain_text_attachment.get_download_url(), '/download/simple-text')
         self.assertEqual(self.plain_text_attachment.get_absolute_url(),
                          self.plain_text_attachment.attachment.url)
-        self.assertTrue(self.plain_text_attachment.filename.startswith('simple'))
+        self.assertTrue(self.plain_text_attachment.filename.startswith('Simple text'))
         self.assertEqual(unicode(self.plain_text_attachment), 'Simple text')
 
     def test_download_attachment_view(self):
