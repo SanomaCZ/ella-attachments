@@ -90,8 +90,9 @@ class Attachment(models.Model):
     def get_absolute_url(self):
         return self.attachment.url
 
+    @property
     def filename(self):
-        return os.path.basename(self.attachment.url)
+        return self.name or os.path.basename(self.attachment.url)
 
     class Meta:
         ordering = ('created',)
