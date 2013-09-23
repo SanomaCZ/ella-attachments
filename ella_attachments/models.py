@@ -6,9 +6,11 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 
+import ella
 from ella.core.box import Box
 from ella.core.models import Publishable
 from ella.photos.models import Photo
+from ella.core.cache import CachedForeignKey
 
 
 UPLOAD_TO = getattr(settings, 'ATTACHMENTS_UPLOAD_TO', 'attachments/%Y/%m/%d')
@@ -34,25 +36,27 @@ class AttachmentBox(Box):
         "Updates box context with attachment-specific variables."
         cont = super(AttachmentBox, self).get_context()
         cont.update({
-            'name' : self.params.get('name', self.obj.name),
-            'description' : self.params.get('description', self.obj.description),
-            'attachment' : self.params.get('attachment', self.obj.attachment),
-            'type_name': self.params.get('type_name', self.obj.type.name),
-            'type_mimetype': self.params.get('type_mimetype', self.obj.type.mimetype),
+            'name': self.params.get('name', self.obj.name),
+            'description': self.params.get('description', self.obj.description),
+            'attachment': self.params.get('attachment', self.obj.attachment),
+            'type_name': self.params.get('type_name', getattr(self.obj.type, 'name', None)),
+            'type_mimetype': self.params.get('type_mimetype', getattr(self.obj.type, 'mimetype', None)),
         })
         return cont
-    
-    def _get_template_list(self):    
+
+    def _get_template_list(self):
         " Get the hierarchy of templates belonging to the object/box_type given. "
         t_list = []
-        base_path = 'box/content_type/%s/' % self.opts
-        
+
+        # Box.opts changed to Box.name in Ella 3
+        base_path = 'box/content_type/%s/' % getattr(self, ella.VERSION < (3,) and 'opts' or 'name')
+
         if hasattr(self.obj, 'slug'):
             t_list.append(base_path + '%s/%s.html' % (self.obj.slug, self.box_type,))
-            
-        if hasattr(self.obj, 'type'):
+
+        if hasattr(self.obj, 'type') and hasattr(self.obj.type, 'slug'):
             t_list.append(base_path + 'type/%s/%s.html' % (self.obj.type.slug, self.box_type,))
-            
+
         t_list.append(base_path + '%s.html' % (self.box_type,))
         t_list.append(base_path + 'box.html')
 
@@ -68,7 +72,7 @@ class Attachment(models.Model):
     name = models.CharField(_('Name'), max_length=255)
     slug = models.SlugField(_('Slug'), max_length=255, unique=True)
 
-    photo = models.ForeignKey(Photo, blank=True, null=True, verbose_name=_('Photo'), related_name='photos')
+    photo = CachedForeignKey(Photo, blank=True, null=True, verbose_name=_('Photo'), related_name='photos')
     publishables = models.ManyToManyField(Publishable, blank=True, null=True,
                                           verbose_name=_('Publishables'))
 
@@ -78,7 +82,7 @@ class Attachment(models.Model):
 
     attachment = models.FileField(_('Attachment'), upload_to=UPLOAD_TO)
 
-    type = models.ForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
+    type = CachedForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
 
     def get_download_url(self):
         return reverse('ella_attachments-download', kwargs={'slug': self.slug})
@@ -86,8 +90,9 @@ class Attachment(models.Model):
     def get_absolute_url(self):
         return self.attachment.url
 
+    @property
     def filename(self):
-        return os.path.basename(self.attachment.url)
+        return self.name or os.path.basename(self.attachment.url)
 
     class Meta:
         ordering = ('created',)
