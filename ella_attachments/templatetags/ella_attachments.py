@@ -7,7 +7,8 @@ from ella.core.models import Publishable
 register = template.Library()
 
 
-class PublishableDoesNotExist(Exception): pass
+class PublishableDoesNotExist(Exception):
+    pass
 
 
 class AttachmentsNode(template.Node):

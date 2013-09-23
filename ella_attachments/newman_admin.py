@@ -9,6 +9,7 @@ from ella_attachments.models import Attachment, Type
 
 GUESS_MIMETYPE = getattr(settings, 'ATTACHMENTS_GUESS_MIMETYPE', True)
 
+
 class AttachmentInlineAdmin(newman.NewmanTabularInline):
     model = Attachment.publishables.through
     extra = 3
@@ -24,10 +25,10 @@ class AttachmentAdmin(newman.NewmanModelAdmin):
     else:
         list_display = ('name', 'type', 'created',)
     list_filter = ('type',)
-    prepopulated_fields = {'slug' : ('name',)}
+    prepopulated_fields = {'slug': ('name',)}
     rich_text_fields = {'small': ('description',)}
     raw_id_fields = ('photo',)
-    suggest_fields = {'publishables': ('__unicode__', 'title', 'slug',),}
+    suggest_fields = {'publishables': ('__unicode__', 'title', 'slug',), }
 
 
 class TypeAdmin(newman.NewmanModelAdmin):

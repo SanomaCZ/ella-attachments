@@ -36,9 +36,9 @@ class AttachmentBox(Box):
         "Updates box context with attachment-specific variables."
         cont = super(AttachmentBox, self).get_context()
         cont.update({
-            'name' : self.params.get('name', self.obj.name),
-            'description' : self.params.get('description', self.obj.description),
-            'attachment' : self.params.get('attachment', self.obj.attachment),
+            'name': self.params.get('name', self.obj.name),
+            'description': self.params.get('description', self.obj.description),
+            'attachment': self.params.get('attachment', self.obj.attachment),
             'type_name': self.params.get('type_name', getattr(self.obj.type, 'name', None)),
             'type_mimetype': self.params.get('type_mimetype', getattr(self.obj.type, 'mimetype', None)),
         })
