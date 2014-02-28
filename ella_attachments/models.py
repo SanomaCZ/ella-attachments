@@ -3,17 +3,29 @@ from datetime import datetime
 
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_unicode, smart_str
 
 import ella
 from ella.core.box import Box
+from ella.utils.timezone import now
 from ella.core.models import Publishable
 from ella.photos.models import Photo
 from ella.core.cache import CachedForeignKey
 
+from ella_attachments.utils import slugify
+from ella_attachments.conf import attachments_settings
 
-UPLOAD_TO = getattr(settings, 'ATTACHMENTS_UPLOAD_TO', 'attachments/%Y/%m/%d')
+
+def upload_to(instance, filename):
+    name, ext = os.path.splitext(filename)
+    name = instance.slug and instance.slug or slugify(name)
+    file_name = ''.join([name, ext.lower()])
+
+    return os.path.join(
+        force_unicode(now().strftime(smart_str(attachments_settings.UPLOAD_TO))),
+        file_name
+    )
 
 
 class Type(models.Model):
@@ -80,7 +92,7 @@ class Attachment(models.Model):
 
     created = models.DateTimeField(_('Created'), default=datetime.now, editable=False)
 
-    attachment = models.FileField(_('Attachment'), upload_to=UPLOAD_TO)
+    attachment = models.FileField(_('Attachment'), upload_to=upload_to)
 
     type = CachedForeignKey(Type, verbose_name=_('Attachment type'), blank=True, null=True, default=None)
 
