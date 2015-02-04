@@ -7,7 +7,6 @@ __versionstr__ = '.'.join(map(str, VERSION))
 
 install_requires = [
     'ella>=2,<4',
-    'South>=0.7',
 ]
 
 test_requires = [
