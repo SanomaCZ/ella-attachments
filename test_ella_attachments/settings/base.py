@@ -41,3 +41,5 @@ INSTALLED_APPS = (
 
     'ella_attachments',
 )
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
