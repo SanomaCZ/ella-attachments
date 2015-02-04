@@ -12,7 +12,7 @@ def download_attachment(request, slug):
         mimetype = mimetypes.guess_type(attachment.attachment.url)[0]
     else:
         mimetype = attachment.type.mimetype
-    response = HttpResponse(mimetype=mimetype)
+    response = HttpResponse(content_type=mimetype)
     response['Content-Disposition'] = 'attachment; filename="%s"' % attachment.filename
 
     response.write(attachment.attachment.read())
