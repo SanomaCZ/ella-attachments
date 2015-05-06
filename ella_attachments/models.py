@@ -85,7 +85,7 @@ class Attachment(models.Model):
     slug = models.SlugField(_('Slug'), max_length=255, unique=True)
 
     photo = CachedForeignKey(Photo, blank=True, null=True, verbose_name=_('Photo'), related_name='photos')
-    publishables = models.ManyToManyField(Publishable, blank=True, null=True,
+    publishables = models.ManyToManyField(Publishable, blank=True,
                                           verbose_name=_('Publishables'))
 
     description = models.TextField(_('Description'), blank=True, null=True, default=None)
