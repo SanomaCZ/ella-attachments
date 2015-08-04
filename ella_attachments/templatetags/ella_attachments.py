@@ -27,7 +27,7 @@ class AttachmentsNode(template.Node):
             raise PublishableDoesNotExist()
 
     def get_attachments(self, context):
-        attachments = self.get_publishable(context).attachment_set.select_related(depth=1).all()
+        attachments = self.get_publishable(context).attachment_set.all()
         mimetypes_dict = self.get_mimetypes_dict(attachments)
         return {'all': attachments, 'type': mimetypes_dict}
 
