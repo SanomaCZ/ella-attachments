@@ -1,10 +1,12 @@
+from __future__ import unicode_literals
+
 import os
 from datetime import datetime
 
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.utils.encoding import force_unicode, smart_str
+from django.utils.encoding import force_text, smart_str, python_2_unicode_compatible
 
 import ella
 from ella.core.box import Box
@@ -23,11 +25,12 @@ def upload_to(instance, filename):
     file_name = ''.join([name, ext.lower()])
 
     return os.path.join(
-        force_unicode(now().strftime(smart_str(attachments_settings.UPLOAD_TO))),
+        force_text(now().strftime(smart_str(attachments_settings.UPLOAD_TO))),
         file_name
     )
 
 
+@python_2_unicode_compatible
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=100)
     slug = models.SlugField(_('Slug'), max_length=100, unique=True)
@@ -39,7 +42,7 @@ class Type(models.Model):
         verbose_name = _('Type')
         verbose_name_plural = _('Types')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -78,6 +81,7 @@ class AttachmentBox(Box):
         return t_list
 
 
+@python_2_unicode_compatible
 class Attachment(models.Model):
     box_class = AttachmentBox
 
@@ -111,5 +115,5 @@ class Attachment(models.Model):
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name

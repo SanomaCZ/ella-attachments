@@ -1,4 +1,7 @@
+from __future__ import unicode_literals
+
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.encoding import force_text
 from django.http import Http404
 from django.test import TestCase
 from django.template import Template, Context, NodeList
@@ -15,13 +18,13 @@ class TestApp(TestCase):
         self.plain_text_attachment = Attachment.objects.create(
             name='Simple text', slug='simple-text', type=self.plain_text_type
         )
-        self.plain_text_attachment.attachment = SimpleUploadedFile('simple', 'simple text')
+        self.plain_text_attachment.attachment = SimpleUploadedFile('simple', b'simple text')
         self.plain_text_attachment.save()
 
         self.none_type_attachment = Attachment.objects.create(
             name='None type', slug='none-type',
         )
-        self.none_type_attachment.attachment = SimpleUploadedFile('plain.txt', 'plain.txt')
+        self.none_type_attachment.attachment = SimpleUploadedFile('plain.txt', b'plain.txt')
         self.none_type_attachment.save()
 
     def test_box_without_params(self):
@@ -92,19 +95,19 @@ class TestApp(TestCase):
         self.assertEqual(context['type_mimetype'], 'TM')
 
     def tests_for_full_models_coverage(self):
-        self.assertEqual(unicode(self.plain_text_type), u'Plain text')
+        self.assertEqual(force_text(self.plain_text_type), 'Plain text')
         self.assertEqual(self.plain_text_attachment.get_download_url(), '/download/simple-text')
         self.assertEqual(self.plain_text_attachment.get_absolute_url(),
                          self.plain_text_attachment.attachment.url)
         self.assertTrue(self.plain_text_attachment.filename.startswith('Simple text'))
-        self.assertEqual(unicode(self.plain_text_attachment), 'Simple text')
+        self.assertEqual(force_text(self.plain_text_attachment), 'Simple text')
 
     def test_download_attachment_view(self):
         response = download_attachment(None, 'simple-text')
         self.assertEqual(response['Content-Type'], 'text/plain')
         self.assertEqual(response['Content-Disposition'],
                          'attachment; filename="%s"' % self.plain_text_attachment.filename)
-        self.assertEqual(response.content, 'simple text')
+        self.assertEqual(force_text(response.content), 'simple text')
 
         response = download_attachment(None, 'none-type')
         self.assertEqual(response['Content-Type'], 'text/plain')

@@ -28,7 +28,7 @@ class AttachmentAdmin(newman.NewmanModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     rich_text_fields = {'small': ('description',)}
     raw_id_fields = ('photo',)
-    suggest_fields = {'publishables': ('__unicode__', 'title', 'slug',), }
+    suggest_fields = {'publishables': ('__str__', 'title', 'slug',), }
 
 
 class TypeAdmin(newman.NewmanModelAdmin):
