@@ -10,6 +10,24 @@ TEMPLATE_DIRS = (
     join(PROJECT_ROOT, 'templates'),
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.template.context_processors.media',
+    'django.contrib.auth.context_processors.auth',
+)
+
+TEMPLATE_OPTIONS = {
+    'context_processors': TEMPLATE_CONTEXT_PROCESSORS,
+}
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        # 'APP_DIRS': True,
+        # 'DIRS': TEMPLATE_DIRS,
+        'OPTIONS': TEMPLATE_OPTIONS
+    },
+]
+
 SECRET_KEY = 'test_ella_attachments'
 
 DATABASES = {
