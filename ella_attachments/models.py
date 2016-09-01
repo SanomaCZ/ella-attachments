@@ -94,7 +94,7 @@ class Attachment(models.Model):
 
     description = models.TextField(_('Description'), blank=True, null=True, default=None)
 
-    created = models.DateTimeField(_('Created'), default=datetime.now, editable=False)
+    created = models.DateTimeField(_('Created'), default=now, editable=False)
 
     attachment = models.FileField(_('Attachment'), upload_to=upload_to)
 
